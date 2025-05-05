@@ -1,0 +1,73 @@
+import heapq
+
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_index = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    print("Sorted array:", arr)
+
+def prim_mst(graph, v_count):
+    mst = []
+    visited = [False] * v_count
+    min_heap = [(0, 0, -1)]  # (weight, current_vertex, parent)
+    total_weight = 0
+
+    while min_heap:
+        weight, u, parent = heapq.heappop(min_heap)
+
+        if visited[u]:
+            continue
+
+        visited[u] = True
+        total_weight += weight
+
+        if parent != -1:
+            mst.append((parent, u, weight))
+
+        for v, w in graph[u]:
+            if not visited[v]:
+                heapq.heappush(min_heap, (w, v, u))
+
+    print("\nMinimum Spanning Tree:")
+    for u, v, w in mst:
+        print(f"{u} -- {v} == {w}")
+    print("Total Weight of MST:", total_weight)
+
+def input_graph():
+    v_count = int(input("Enter number of vertices: "))
+    e_count = int(input("Enter number of edges: "))
+    graph = {i: [] for i in range(v_count)}
+    print("Enter edges in the format: u v weight")
+    for _ in range(e_count):
+        u, v, w = map(int, input().split())
+        graph[u].append((v, w))
+        graph[v].append((u, w))  # Undirected graph
+    return graph, v_count
+
+# Main Menu Loop
+while True:
+    print("\nChoose an algorithm to run:")
+    print("1. Selection Sort")
+    print("2. Prim's Algorithm")
+    print("3. Exit")
+
+    choice = input("Enter 1, 2, or 3: ")
+
+    if choice == '1':
+        arr = list(map(int, input("Enter elements separated by space: ").split()))
+        selection_sort(arr)
+
+    elif choice == '2':
+        graph, v_count = input_graph()
+        prim_mst(graph, v_count)
+
+    elif choice == '3':
+        print("Exiting program. Goodbye!")
+        break
+
+    else:
+        print("Invalid choice. Please enter 1, 2, or 3.")

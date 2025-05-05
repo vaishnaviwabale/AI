@@ -1,0 +1,64 @@
+# ----------- Selection Sort -----------
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_index = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr
+
+# ----------- Kruskal's Algorithm -----------
+def find(parent, i):
+    while parent[i] != i:
+        i = parent[i]
+    return i
+
+def union(parent, x, y):
+    xroot = find(parent, x)
+    yroot = find(parent, y)
+    parent[yroot] = xroot
+
+def kruskal(n, edges):
+    edges.sort()  # sort by weight
+    parent = [i for i in range(n)]
+    mst = []
+    cost = 0
+
+    for w, u, v in edges:
+        if find(parent, u) != find(parent, v):
+            mst.append((u, v, w))
+            cost += w
+            union(parent, u, v)
+    
+    return mst, cost
+
+# ----------- Main Code -----------
+print("1. Selection Sort")
+print("2. Kruskal's Algorithm")
+choice = input("Enter your choice (1 or 2): ")
+
+if choice == '1':
+    arr = list(map(int, input("Enter numbers to sort: ").split()))
+    sorted_arr = selection_sort(arr)
+    print("Sorted array:", sorted_arr)
+
+elif choice == '2':
+    n = int(input("Enter number of vertices: "))
+    e = int(input("Enter number of edges: "))
+    edges = []
+
+    print("Enter each edge as: u v w")
+    for _ in range(e):
+        u, v, w = map(int, input().split())
+        edges.append((w, u, v))
+
+    mst, total_cost = kruskal(n, edges)
+    print("\nMinimum Spanning Tree:")
+    for u, v, w in mst:
+        print(f"{u} -- {v} == {w}")
+    print("Total Cost:", total_cost)
+
+else:
+    print("Invalid choice.")
